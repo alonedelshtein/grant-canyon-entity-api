@@ -17,16 +17,23 @@ import (
 const queryByTerm = `{
 	"query": {
 	  "bool": {
-	  "should": [
-	{ "match": { "name":   "%s"  }},
-	{ "match": { "program": "%s" }}
-	  ],
-      "minimum_should_match": 1,
-	  "filter": [
-		{ "term":  { "fund": "%s" }}
-	  ]
-	}
-	}
+		"should": [
+				{ "match": { "name":   "%s"  }},
+				{ "match": { "program": "%s" }}
+			],
+			"minimum_should_match": 1,
+			"filter": [
+				{ "term":  { "fund": "%s" }}
+			]
+		}
+	},
+	"sort": [
+	  {
+	    "due_date": {
+	      "order": "desc"
+	    }
+	  }
+	]
   }`
 
 func PostBulk(client *opensearch.Client, index string, docs string) (map[string]interface{}, error) {
