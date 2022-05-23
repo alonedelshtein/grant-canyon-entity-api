@@ -73,7 +73,7 @@ func main() {
 
 	router.GET("/IsAlive", isAlive)
 
-	router.POST("/service/fund/v1/fund_id", postFund)
+	router.POST("/service/fund/v1/funds", postFunds)
 	router.GET("/service/fund/v1/fund_id/:id", getFundById)
 	router.POST("/service/fund/v1/search", searchFund)
 
@@ -92,9 +92,48 @@ func searchFund(c *gin.Context) {
 		return
 	}
 
-	categories := utils.SearchByTerm(client, "gc-fund-v1", request.Term, request.Fund)
+	funds := utils.SearchByTerm(client, "gc-fund-v1", request.Term, request.Fund)
+	count := len(funds)
+	programs := make(map[string]model.Program)
+	for i := 0; i < count; i++ {
+		fund := funds[i]
+		if val, ok := fund["program"]; ok {
+			program_name := val.(string)
+			if prog, exist := programs[program_name]; exist {
+				if val, ok := fund["external_id"]; ok {
+					external_id := val.(string)
+					prog.Funds[external_id] = fund
+				}
+			} else {
+				prog.ProgramName = program_name
+				prog.Funds = make(map[string]interface{})
+				if val, ok := fund["external_id"]; ok {
+					external_id := val.(string)
+					prog.Funds[external_id] = fund
+				}
+				programs[program_name] = prog
+			}
+		}
+	}
+	programsLen := len(programs)
+	res := new(model.SearchResults)
+	res.Programs = make([]model.ProgramSearchResult, programsLen)
+	i := 0
+	for _, prog := range programs {
+		resProg := new(model.ProgramSearchResult)
+		resProg.ProgramName = prog.ProgramName
+		fundsLen := len(prog.Funds)
+		resProg.Funds = make([]interface{}, fundsLen)
+		j := 0
+		for _, fund := range prog.Funds {
+			resProg.Funds[j] = fund
+			j = j + 1
+		}
+		res.Programs[i] = *resProg
+		i = i + 1
+	}
 
-	c.JSON(http.StatusOK, categories)
+	c.JSON(http.StatusOK, res)
 }
 
 func getFundById(c *gin.Context) {
@@ -108,7 +147,7 @@ func getFundById(c *gin.Context) {
 	}
 }
 
-func postFund(c *gin.Context) {
+func postFunds(c *gin.Context) {
 	request := new(model.PutFundRequest)
 
 	// Call BindJSON to bind the received JSON to
@@ -118,17 +157,20 @@ func postFund(c *gin.Context) {
 
 	var docs []map[string]interface{}
 
-	recordBody, internalId := createFundDataOpensearch(*request)
+	for _, fund := range request.Funds {
+		recordBody, internalId := createFundDataOpensearch(fund)
 
-	indexBody := map[string]interface{}{
-		"_index": "gc-fund-v1",
-		"_id":    internalId,
+		indexBody := map[string]interface{}{
+			"_index": "gc-fund-v1",
+			"_id":    internalId,
+		}
+		index := map[string]interface{}{
+			"index": indexBody,
+		}
+		docs = append(docs, index)
+		docs = append(docs, recordBody)
+
 	}
-	index := map[string]interface{}{
-		"index": indexBody,
-	}
-	docs = append(docs, index)
-	docs = append(docs, recordBody)
 
 	var buffer []byte
 	newLineBytes := []byte("\n")
@@ -147,7 +189,7 @@ func postFund(c *gin.Context) {
 	}
 }
 
-func createFundDataOpensearch(record model.PutFundRequest) (map[string]interface{}, string) {
+func createFundDataOpensearch(record model.Fund) (map[string]interface{}, string) {
 
 	internalId := utils.GetMD5Hash(fmt.Sprintf("%s|%s", record.ExternalId, record.Fund))
 

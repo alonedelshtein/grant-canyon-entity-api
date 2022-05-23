@@ -65,7 +65,7 @@ PUT gc-fund-v1
             }
           }
         },
-        "Call" : {
+        "call" : {
           "type" : "text",
           "fields" : {
             "keyword" : {
@@ -74,7 +74,7 @@ PUT gc-fund-v1
             }
           }
         },
-        "TypeOfEffort" : {
+        "type_of_effort" : {
           "type" : "keyword",
           "fields" : {
             "keyword" : {
@@ -83,7 +83,7 @@ PUT gc-fund-v1
             }
           }
         },
-        "Description" : {
+        "description" : {
           "type" : "text",
           "fields" : {
             "keyword" : {
@@ -92,7 +92,7 @@ PUT gc-fund-v1
             }
           }
         },
-        "TotalBudget" : {
+        "total_budget" : {
           "type" : "double",
           "fields" : {
             "keyword" : {
@@ -101,7 +101,7 @@ PUT gc-fund-v1
             }
           }
         },
-        "GrantBudget" : {
+        "grant_budget_low" : {
           "type" : "double",
           "fields" : {
             "keyword" : {
@@ -110,7 +110,16 @@ PUT gc-fund-v1
             }
           }
         },
-        "Currency" : {
+        "grant_budget_high" : {
+          "type" : "double",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "currency" : {
           "type" : "text",
           "fields" : {
             "keyword" : {
@@ -119,7 +128,7 @@ PUT gc-fund-v1
             }
           }
         },
-        "DueDate" : {
+        "due_date" : {
           "type" : "keyword",
           "fields" : {
             "keyword" : {
@@ -128,7 +137,7 @@ PUT gc-fund-v1
             }
           }
         },
-        "SubmissionType" : {
+        "submission_type" : {
           "type" : "text",
           "fields" : {
             "keyword" : {
@@ -137,7 +146,7 @@ PUT gc-fund-v1
             }
           }
         },
-        "Keywords" : {
+        "keywords" : {
           "type" : "keyword",
           "fields" : {
             "keyword" : {
