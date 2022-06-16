@@ -140,7 +140,7 @@ func getFundById(c *gin.Context) {
 	id := c.Param("id")
 
 	sources := utils.SearchById(client, "gc-fund-v1", id)
-	if sources != nil && len(sources) > 0 {
+	if len(sources) > 0 {
 		c.JSON(http.StatusOK, sources)
 	} else {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Not found"})
