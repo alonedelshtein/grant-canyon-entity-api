@@ -14,28 +14,6 @@ import (
 	"github.com/opensearch-project/opensearch-go"
 )
 
-const queryByTerm = `{
-	"query": {
-	  "bool": {
-		"should": [
-				{ "match": { "name":   "%s"  }},
-				{ "match": { "program": "%s" }}
-			],
-			"minimum_should_match": 1,
-			"filter": [
-				{ "term":  { "fund": "%s" }}
-			]
-		}
-	},
-	"sort": [
-	  {
-	    "due_date": {
-	      "order": "desc"
-	    }
-	  }
-	]
-  }`
-
 func PostBulk(client *opensearch.Client, index string, docs string) (map[string]interface{}, error) {
 	ctx := context.Background()
 
@@ -71,8 +49,19 @@ func SearchById(client *opensearch.Client, index string, docId string) []map[str
 	return SearchByQuery(client, index, query)
 }
 
-func SearchByTerm(client *opensearch.Client, index string, term string, fund string) []map[string]interface{} {
-	var query = fmt.Sprintf(queryByTerm, term, term, fund)
+func SearchByTerm(client *opensearch.Client, index string, term string, fund string, only_eu bool, only_us bool) []map[string]interface{} {
+	var query string
+	if !only_eu && !only_us {
+		if len(fund) == 0 {
+			query = fmt.Sprintf(queryByTerm, term, term)
+		} else {
+			query = fmt.Sprintf(queryWithFilterByTerm, term, term, fund)
+		}
+	} else if only_eu {
+		query = fmt.Sprintf(queryWithFilterByTerm, term, term, "EU Funding & Tenders")
+	} else {
+		query = fmt.Sprintf(queryByTermOnlyUS, term, term)
+	}
 
 	return SearchByQuery(client, index, query)
 }

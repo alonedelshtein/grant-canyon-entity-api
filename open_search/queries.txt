@@ -1,0 +1,55 @@
+GET gc-fund-v1/_search
+{
+	"query": {
+	  "match": { "name":  "Innovative Screening Approaches and Therapies for Screenable"  }
+		
+	},
+	"sort": [
+	  {
+	    "due_date": {
+	      "order": "desc"
+	    }
+	  }
+	]
+}
+
+
+POST gc-fund-v1/_delete_by_query
+{
+	"query": {
+	  "bool": {
+  	  "must_not":[
+  	    { 
+  	      "match": {
+  	        "fund":  "EU Funding & Tenders"
+  	      }
+  	    }
+      ]
+    }
+	}
+}
+
+GET gc-fund-v1/_search
+
+GET gc-fund-v1/_search
+{
+	"query": {
+	  "bool": {
+  	  "must_not":[
+  	    { 
+  	      "match": {
+  	        "fund":  "EU Funding & Tenders"
+  	      }
+  	    }
+      ]
+    }
+	},
+	"sort": [
+	  {
+	    "due_date": {
+	      "order": "desc"
+	    }
+	  }
+	],
+	"size": 2000
+}

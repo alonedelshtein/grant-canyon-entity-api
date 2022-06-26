@@ -92,7 +92,7 @@ func searchFund(c *gin.Context) {
 		return
 	}
 
-	funds := utils.SearchByTerm(client, "gc-fund-v1", request.Term, request.Fund)
+	funds := utils.SearchByTerm(client, "gc-fund-v1", request.Term, request.Fund, request.OnlyEU, request.OnlyUS)
 	count := len(funds)
 	programs := make(map[string]model.Program)
 	for i := 0; i < count; i++ {

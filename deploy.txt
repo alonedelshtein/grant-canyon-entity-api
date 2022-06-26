@@ -4,3 +4,11 @@
                                                                   'docker push -a dockerhub4alon/grantcanyon-entity-api'
 4) Update 'entity-api-deployment-eks.yaml' with the new image name and tag.
 5) Deploy db-api docker to eks - 'kubectl apply -f ./configurations/gc-config/entity-api-deployment-eks.yaml'
+
+
+
+"77.137.73.64",
+"141.226.58.240",
+"3.70.70.153",
+"3.71.52.22",
+"5.29.19.176"
