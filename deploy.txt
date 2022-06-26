@@ -1,6 +1,6 @@
 1) Update docker file if needed.
 2) Make sure all changes commited.
-3) Create new docker image and push it to docker hub repository - 'docker build -t dockerhub4alon/grantcanyon-entity-api:1.0.0.3 .'
+3) Create new docker image and push it to docker hub repository - 'docker build -t dockerhub4alon/grantcanyon-entity-api:1.0.0.4 .'
                                                                   'docker push -a dockerhub4alon/grantcanyon-entity-api'
 4) Update 'entity-api-deployment-eks.yaml' with the new image name and tag.
 5) Deploy db-api docker to eks - 'kubectl apply -f ./configurations/gc-config/entity-api-deployment-eks.yaml'
